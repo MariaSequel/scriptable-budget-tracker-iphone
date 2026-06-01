@@ -1,0 +1,30 @@
+ ══════════════════════════════════════════════════════════
+  GOOGLE APPS SCRIPT — should already deployed at your URL
+  (no changes needed to the Apps Script side)
+ ══════════════════════════════════════════════════════════
+  function doPost(e) {
+    try {
+      var data = JSON.parse(e.postData.contents);
+      var ss   = SpreadsheetApp.getActiveSpreadsheet();
+      var sheet = ss.getSheetByName("Expenses");
+      if (!sheet) {
+        sheet = ss.insertSheet("Expenses");
+        sheet.appendRow(["Date","Category","Amount","Description","Month","Logged At"]);
+      }
+      sheet.appendRow([
+        data.date,
+        data.category,
+        data.amount,
+        data.description,
+       data.month,
+       data.loggedAt
+      ]);
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: "ok" }))
+        .setMimeType(ContentService.MimeType.JSON);
+    } catch(err) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
